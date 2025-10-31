@@ -12,7 +12,7 @@ class ArticleController extends Controller
 	
 	public function indexAllSlug()
     {
-        $articles = Article::select('id', 'slug', 'title')->get();
+        $articles = Article::all();
         return new ArticleResource(true, 'Semua Data Artikel', $articles);
     }
 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\module;
 
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 use App\Mail\DonationReceived;
 use App\Models\Campaign;
 use App\Models\Donation;
@@ -44,31 +45,42 @@ class DonationController extends Controller
 
         if ($request->hasFile('payment_proof')) {
             $image = $request->file('payment_proof');
+            $storagePath = Storage::disk('public')->path('payment_proofs');
 
-            if (in_array($image->extension(), ['jpg', 'jpeg', 'png'])) {
+            // ✅ Pastikan folder ada — buat jika belum
+            if (!is_dir($storagePath)) {
+                mkdir($storagePath, 0775, true);
+            }
+
+            if (in_array(strtolower($image->extension()), ['jpg', 'jpeg', 'png'])) {
                 $filename = uniqid() . '.webp';
+                $path = $storagePath . '/' . $filename;
 
-                $path = public_path('storage/payment_proofs/' . $filename);
-                Image::make($image)->resize(640, null, function ($constraint) {
-                    $constraint->aspectRatio();
-                })->encode('webp', 80)->save($path);
+                Image::make($image)
+                    ->resize(640, null, function ($constraint) {
+                        $constraint->aspectRatio();
+                    })
+                    ->encode('webp', 80)
+                    ->save($path);
 
                 $donation->payment_proof = 'payment_proofs/' . $filename;
             } else {
+                // untuk file PDF atau selain image
                 $donation->payment_proof = $image->store('payment_proofs', 'public');
             }
         }
 
         $donation->save();
-		
-		// Reciver email
-		Mail::to(config('mail.donation_recipients'))
-			->send(new DonationReceived($donation, $campaign));
 
+        // ✅ Kirim notifikasi email (jika ada pengaturan)
+        if (config('mail.donation_recipients')) {
+            Mail::to(config('mail.donation_recipients'))
+                ->send(new DonationReceived($donation, $campaign));
+        }
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Donation updated successfully'
+            'message' => 'Donation saved successfully'
         ], 200);
     }
 

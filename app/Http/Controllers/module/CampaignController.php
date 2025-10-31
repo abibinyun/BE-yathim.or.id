@@ -12,7 +12,7 @@ class CampaignController extends Controller
 {
 	public function indexAllSlug()
     {
-        $campaigns = Campaign::select('id', 'slug', 'title')->get();
+        $campaigns = Campaign::all();
         return new CampaignResource(true, 'Semua Data Campaign', $campaigns);
     }
 	

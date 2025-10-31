@@ -77,6 +77,11 @@ class CampaignResource extends Resource
                             ->options(Category::all()->pluck('name', 'id')) // Mengambil nama kategori untuk select
                             ->searchable()
                             ->required(),
+						TextInput::make('facebook_pixel')
+                            ->label('Facebook Pixel ID')
+                            ->nullable()
+                            ->maxLength(255)
+                            ->placeholder('Optional, enter Facebook Pixel ID'),
                     ])
                     ->columns(2),
             ]);

@@ -15,36 +15,26 @@ return [
     |
     */
 
-    // 'paths' => ['api/*', 'sanctum/csrf-cookie', '*'],
+    'paths' => ['api/*', 'sanctum/csrf-cookie'],
 
-    // 'allowed_methods' => ['*'],
-	
-	// 'allowed_origins' => ['https://yathim.or.id'],
+    // Izinkan semua origin (wildcard)
+    'allowed_origins' => ['https://yathim.or.id', 'http://localhost:4321'],
 
-    // 'allowed_origins_patterns' => [],
-
-    // 'allowed_headers' => ['*'],
-
-    // 'exposed_headers' => [],
-
-    // 'max_age' => 0,
-
-    // 'supports_credentials' => true,
-	
-	'paths' => ['api/*', 'sanctum/csrf-cookie'],
-
-    'allowed_methods' => ['*'],
-
-    'allowed_origins' => ['http://localhost:4321', 'http://127.0.0.1:4321', 'https://yathim.or.id'],
-
+    // Atau bisa pakai pola regex (kalau mau kontrol sebagian domain)
     'allowed_origins_patterns' => [],
 
-    'allowed_headers' => ['*'],
+    // Izinkan semua metode
+    'allowed_methods' => ['GET','POST','PUT','PATCH','DELETE'],
 
+    // Izinkan semua headers
+    'allowed_headers' => ['Origin', 'Content-Type', 'Accept', 'Authorization', 'X-Custom-Header'],
+
+    // Kalau mau header tertentu tetap terbuka di response
     'exposed_headers' => [],
 
-    'max_age' => 0,
+    // Cache preflight selama 1 hari
+    'max_age' => 86400,
 
+    // Jika pakai session / sanctum, tetap true
     'supports_credentials' => true,
-
 ];
