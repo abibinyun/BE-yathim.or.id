@@ -81,7 +81,7 @@ class PageBannerResource extends Resource
                     ->label('Image')
                     ->directory('banner_image')
                     ->image()
-                    ->resize(80)
+                    ->resize(60)
                     ->optimize('webp')
                     ->deleteUploadedFileUsing(function ($file, $record) {
                         if ($record && $record->banner_image) {

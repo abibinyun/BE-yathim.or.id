@@ -71,7 +71,7 @@ class ArticleResource extends Resource
                     ->label('Image')
                     ->directory('articles')
                     ->image()
-                    ->resize(80)
+                    ->resize(60)
                     ->optimize('webp')
                     ->deleteUploadedFileUsing(function ($file, $record) {
                         if ($record && $record->image) {

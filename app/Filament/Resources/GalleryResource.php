@@ -37,7 +37,7 @@ class GalleryResource extends Resource
                     ->label('Image')
                     ->directory('gallery')
                     ->image()
-                    ->resize(80)
+                    ->resize(60)
                     ->multiple()
 					->maxSize(5120)
                     ->optimize('webp')

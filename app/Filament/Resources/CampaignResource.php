@@ -53,7 +53,7 @@ class CampaignResource extends Resource
                             ->label('Image')
                             ->directory('campaigns')
                             ->image()
-                            ->resize(80)
+                            ->resize(60)
                             ->optimize('webp')
                             ->deleteUploadedFileUsing(function ($file, $record) {
                                 if ($record && $record->image) {

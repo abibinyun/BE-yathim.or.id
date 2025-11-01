@@ -37,7 +37,7 @@ class BankAccountResource extends Resource
                     ->label('Image')
                     ->directory('bank_logos')
                     ->image()
-                    ->resize(80)
+                    ->resize(60)
                     ->optimize('webp')
                     ->deleteUploadedFileUsing(function ($file, $record) {
                         if ($record && $record->logo) {
