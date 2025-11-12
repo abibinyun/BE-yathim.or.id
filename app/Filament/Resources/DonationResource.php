@@ -15,6 +15,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Forms\Components\FileUpload;
 use App\Filament\Resources\DonationResource\Pages;
+use Illuminate\Support\Facades\Auth;
 
 class DonationResource extends Resource
 {
@@ -108,10 +109,10 @@ class DonationResource extends Resource
         ];
     }
 
-    public static function canCreate(): bool
-    {
-        return false;
-    }
+    // public static function canCreate(): bool
+    // {
+    //     return false;
+    // }
 
     public static function getNavigationVisibility(): bool
     {
@@ -125,5 +126,30 @@ class DonationResource extends Resource
             'create' => Pages\CreateDonation::route('/create'),
             'edit' => Pages\EditDonation::route('/{record}/edit'),
         ];
+    }
+
+    public static function canViewAny(): bool
+    {
+        return Auth::user()->can('view_donasi');
+    }
+
+    public static function canCreate(): bool
+    {
+        return Auth::user()->can('create_donasi');
+    }
+
+    public static function canEdit($record): bool
+    {
+        return Auth::user()->can('update_donasi');
+    }
+
+    public static function canDelete($record): bool
+    {
+        return Auth::user()->can('delete_donasi');
+    }
+
+    public static function canBulkDelete(): bool
+    {
+        return Auth::user()->can('delete_donasi');
     }
 }

@@ -7,6 +7,7 @@ namespace App\Filament\Widgets;
 use Filament\Widgets\Widget;
 use Illuminate\Support\Facades\Http;
 use Filament\Notifications\Notification;
+use Illuminate\Support\Facades\Auth;
 
 class TriggerGithubActionWidget extends Widget
 {
@@ -15,6 +16,12 @@ class TriggerGithubActionWidget extends Widget
 
     // Opsi untuk mengatur tampilan grid di dashboard
     protected int | string | array $columnSpan = 1;
+
+    // Hanya super-admin yang boleh lihat widget
+    public static function canView(): bool
+    {
+        return Auth::user()?->hasRole('super-admin');
+    }
 
     // Metode yang akan dipanggil saat tombol diklik
     public function triggerAction()

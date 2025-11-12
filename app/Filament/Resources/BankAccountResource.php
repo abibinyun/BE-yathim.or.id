@@ -12,6 +12,7 @@ use Filament\Forms\Components\FileUpload;
 use App\Filament\Resources\BankAccountResource\Pages;
 use Filament\Tables\Columns\ImageColumn;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
 
 class BankAccountResource extends Resource
 {
@@ -91,5 +92,30 @@ class BankAccountResource extends Resource
             'create' => Pages\CreateBankAccount::route('/create'),
             'edit' => Pages\EditBankAccount::route('/{record}/edit'),
         ];
+    }
+
+    public static function canViewAny(): bool
+    {
+        return Auth::user()->can('view_bankaccount');
+    }
+
+    public static function canCreate(): bool
+    {
+        return Auth::user()->can('create_bankaccount');
+    }
+
+    public static function canEdit($record): bool
+    {
+        return Auth::user()->can('update_bankaccount');
+    }
+
+    public static function canDelete($record): bool
+    {
+        return Auth::user()->can('delete_bankaccount');
+    }
+
+    public static function canBulkDelete(): bool
+    {
+        return Auth::user()->can('delete_bankaccount');
     }
 }

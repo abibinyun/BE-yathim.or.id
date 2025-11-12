@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Storage;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\FileUpload;
 use App\Filament\Resources\CategoryResource\Pages;
+use Illuminate\Support\Facades\Auth;
 
 class CategoryResource extends Resource
 {
@@ -87,5 +88,30 @@ class CategoryResource extends Resource
             'create' => Pages\CreateCategory::route('/create'),
             'edit' => Pages\EditCategory::route('/{record}/edit'),
         ];
+    }
+
+    public static function canViewAny(): bool
+    {
+        return Auth::user()->can('view_category');
+    }
+
+    public static function canCreate(): bool
+    {
+        return Auth::user()->can('create_category');
+    }
+
+    public static function canEdit($record): bool
+    {
+        return Auth::user()->can('update_category');
+    }
+
+    public static function canDelete($record): bool
+    {
+        return Auth::user()->can('delete_category');
+    }
+
+    public static function canBulkDelete(): bool
+    {
+        return Auth::user()->can('delete_category');
     }
 }

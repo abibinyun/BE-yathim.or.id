@@ -23,6 +23,7 @@ use Illuminate\Validation\Rule;
 use Filament\Forms\Get;
 
 use function Laravel\Prompts\text;
+use Illuminate\Support\Facades\Auth;
 
 class PageBannerResource extends Resource
 {
@@ -167,5 +168,30 @@ class PageBannerResource extends Resource
             'create' => Pages\CreatePageBanner::route('/create'),
             'edit' => Pages\EditPageBanner::route('/{record}/edit'),
         ];
+    }
+
+    public static function canViewAny(): bool
+    {
+        return Auth::user()->can('view_pagebanner');
+    }
+
+    public static function canCreate(): bool
+    {
+        return Auth::user()->can('create_pagebanner');
+    }
+
+    public static function canEdit($record): bool
+    {
+        return Auth::user()->can('update_pagebanner');
+    }
+
+    public static function canDelete($record): bool
+    {
+        return Auth::user()->can('delete_pagebanner');
+    }
+
+    public static function canBulkDelete(): bool
+    {
+        return Auth::user()->can('delete_pagebanner');
     }
 }

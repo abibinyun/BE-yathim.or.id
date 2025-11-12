@@ -21,6 +21,7 @@ use Filament\Tables\Actions\DeleteBulkAction;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
 
 class CampaignResource extends Resource
 {
@@ -107,7 +108,8 @@ class CampaignResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make()
+                    ->visible(fn ($record) => Auth::user()->can('update', $record)),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -118,7 +120,8 @@ class CampaignResource extends Resource
                                     Storage::disk('public')->delete($record->image);
                                 }
                             }
-                        }),
+                        })
+                        ->visible(fn () => Auth::user()->hasRole('super-admin') || Auth::user()->can('delete', Model::class)),
                 ]),
             ]);
     }
@@ -137,5 +140,30 @@ class CampaignResource extends Resource
             'create' => Pages\CreateCampaign::route('/create'),
             'edit' => Pages\EditCampaign::route('/{record}/edit'),
         ];
+    }
+
+    public static function canViewAny(): bool
+    {
+        return Auth::user()->can('view_campaign');
+    }
+
+    public static function canCreate(): bool
+    {
+        return Auth::user()->can('create_campaign');
+    }
+
+    public static function canEdit($record): bool
+    {
+        return Auth::user()->can('update_campaign');
+    }
+
+    public static function canDelete($record): bool
+    {
+        return Auth::user()->can('delete_campaign');
+    }
+
+    public static function canBulkDelete(): bool
+    {
+        return Auth::user()->can('delete_campaign');
     }
 }

@@ -19,6 +19,7 @@ use Filament\Tables\Actions\DeleteBulkAction;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
 
 class ArticleResource extends Resource
 {
@@ -105,7 +106,8 @@ class ArticleResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make()
+                    ->visible(fn ($record) => Auth::user()->can('update', $record)),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -116,7 +118,8 @@ class ArticleResource extends Resource
                                     Storage::disk('public')->delete($record->image);
                                 }
                             }
-                        }),
+                        })
+                        ->visible(fn () => Auth::user()->hasRole('super-admin') || Auth::user()->can('delete', Model::class))
                 ]),
             ]);
     }
@@ -135,5 +138,30 @@ class ArticleResource extends Resource
             'create' => Pages\CreateArticle::route('/create'),
             'edit' => Pages\EditArticle::route('/{record}/edit'),
         ];
+    }
+
+    public static function canViewAny(): bool
+    {
+        return Auth::user()->can('view_article');
+    }
+
+    public static function canCreate(): bool
+    {
+        return Auth::user()->can('create_article');
+    }
+
+    public static function canEdit($record): bool
+    {
+        return Auth::user()->can('update_article');
+    }
+
+    public static function canDelete($record): bool
+    {
+        return Auth::user()->can('delete_article');
+    }
+
+    public static function canBulkDelete(): bool
+    {
+        return Auth::user()->can('delete_article');
     }
 }

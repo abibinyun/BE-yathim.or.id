@@ -16,6 +16,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
 
 class GalleryResource extends Resource
 {
@@ -90,5 +91,30 @@ class GalleryResource extends Resource
             'create' => Pages\CreateGallery::route('/create'),
             'edit' => Pages\EditGallery::route('/{record}/edit'),
         ];
+    }
+
+    public static function canViewAny(): bool
+    {
+        return Auth::user()->can('view_gallery');
+    }
+
+    public static function canCreate(): bool
+    {
+        return Auth::user()->can('create_gallery');
+    }
+
+    public static function canEdit($record): bool
+    {
+        return Auth::user()->can('update_gallery');
+    }
+
+    public static function canDelete($record): bool
+    {
+        return Auth::user()->can('delete_gallery');
+    }
+
+    public static function canBulkDelete(): bool
+    {
+        return Auth::user()->can('delete_gallery');
     }
 }
