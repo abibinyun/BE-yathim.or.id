@@ -207,15 +207,14 @@ return [
         'Category'     => ['view','create','update','delete'],
         'Donasi'       => ['view','create','update','delete'],
         'Gallery'      => ['view','create','update','delete'],
-        'General'      => ['view','update'], // misal hanya update allowed
-        'PageBanner'   => ['view','update'], // CRUD mungkin tidak semua
+        'General'      => ['view','update'],
+        'PageBanner'   => ['view','update'],
         'BankAccount'  => ['view','create','update','delete'],
     ],
 
     'roles' => [
         'super-admin' => 'all',
         'admin' => [
-            'User'        => ['view','create','update','delete'],
             'Article'     => ['view','create','update','delete'],
             'Campaign'    => ['view','create','update','delete'],
             'Category'    => ['view','update'],

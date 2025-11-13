@@ -22,9 +22,9 @@ class CampaignController extends Controller
         $categorySlug  = $request->query('category');
 
         if ($categorySlug) {
-            $category = Category::where('slug', $categorySlug)->first(); // Cari kategori berdasarkan slug
+            $category = Category::where('slug', $categorySlug)->first();
             if ($category) {
-                $query->where('category_id', $category->id); // Filter campaign berdasarkan kategori
+                $query->where('category_id', $category->id);
             }
         }
 

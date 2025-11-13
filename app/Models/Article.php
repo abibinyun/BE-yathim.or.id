@@ -10,14 +10,16 @@ class Article extends Model
     use HasFactory;
 
     protected $fillable = [
-        'title',         // Judul artikel
-        'slug',          // Slug artikel (unik)
-        'content',       // Konten artikel
-        'excerpt',       // Ringkasan artikel
-        'published_at',  // Tanggal publikasi
-        'category',      // Kategori artikel (news, stories, dll)
-        'status',        // Status artikel (draft, published, dll)
-        'featured',      // Featured artikel (primary, hot, none)
-        'image',         // Path gambar artikel
+        'title',
+        'slug',
+        'content',
+        'excerpt',
+        'published_at',
+        'category',
+        'status',
+        'featured',
+        'image',
+        'recommended_article_ids',
+        'recommended_campaign_ids'
     ];
 }

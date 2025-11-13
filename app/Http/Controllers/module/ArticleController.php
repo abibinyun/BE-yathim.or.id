@@ -5,15 +5,49 @@ namespace App\Http\Controllers\module;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ArticleResource;
 use App\Models\Article;
+use App\Models\Campaign;
 use Illuminate\Http\Request;
 
 class ArticleController extends Controller
 {
-	
-	public function indexAllSlug()
+
+    public function indexAllSlug()
     {
         $articles = Article::all();
-        return new ArticleResource(true, 'Semua Data Artikel', $articles);
+
+        $allArticlesData = $articles->map(function ($article) {
+            $relatedArticles = Article::where('category', $article->category)
+                                    ->where('slug', '!=', $article->slug)
+                                    ->take(3)
+                                    ->get();
+
+            $recommendedArticle = [];
+            if ($article->recommended_article_ids) {
+                $recommendedArticle = Article::whereIn('id', json_decode($article->recommended_article_ids))
+                                            ->where('slug', '!=', $article->slug)
+                                            ->get();
+            }
+
+            $recommendedCampaign = [];
+            if ($article->recommended_campaign_ids) {
+                $recommendedCampaign = Campaign::whereIn('id', json_decode($article->recommended_campaign_ids))
+                                            ->where('slug', '!=', $article->slug)
+                                            ->get();
+            }
+
+            return [
+                'article' => new ArticleResource(true, 'Article Data', $article),
+                'related_articles' => $relatedArticles,
+                'recommended_articles' => $recommendedArticle,
+                'recommended_campaign' => $recommendedCampaign,
+            ];
+        });
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Semua Data Artikel',
+            'data' => $allArticlesData,
+        ]);
     }
 
 
@@ -66,6 +100,33 @@ class ArticleController extends Controller
             ], 404);
         }
 
-        return new ArticleResource(true, 'Article Data', $article);
+        $relatedArticles = Article::where('category', $article->category)
+                                ->where('slug', '!=', $slug)
+                                ->take(3)
+                                ->get();
+
+        $recommendedArticle = [];
+        if ($article->recommended_article_ids) {
+            $recommendedArticle = Article::whereIn('id', json_decode($article->recommended_article_ids))
+                                        ->where('slug', '!=', $slug)
+                                        ->get();
+        }
+
+        $recommendedCampaign = [];
+        if ($article->recommended_campaign_ids) {
+            $recommendedCampaign = Campaign::whereIn('id', json_decode($article->recommended_campaign_ids))
+                                        ->where('slug', '!=', $slug)
+                                        ->get();
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Article Data',
+            'data' => new ArticleResource(true, 'Article Data', $article),
+            'related_articles' => $relatedArticles,
+            'recommended_articles' => $recommendedArticle,
+            'recommended_campaign' => $recommendedCampaign,
+        ]);
     }
+
 }

@@ -4,10 +4,12 @@ namespace App\Filament\Resources;
 
 use Filament\Tables;
 use App\Models\Article;
+use App\Models\Campaign;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\MultiSelect;
 use Filament\Forms\Components\Textarea;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
@@ -81,7 +83,35 @@ class ArticleResource extends Resource
                     }),
                 DatePicker::make('published_at')
                     ->nullable()
-                    ->label('Published At')
+                    ->label('Published At'),
+                MultiSelect::make('recommended_article_ids')
+                    ->label('Rekomendasi Artikel')
+                    ->options(function () {
+                        return Article::where('status', 'published')
+                                    ->pluck('title', 'id');
+                    })
+                    ->nullable()
+                    ->searchable()
+                    ->afterStateHydrated(fn ($set, ?Article $record) => 
+                        $set('recommended_article_ids', $record?->recommended_article_ids
+                            ? json_decode($record->recommended_article_ids) : []
+                        )
+                    )
+                    ->multiple(),
+                MultiSelect::make('recommended_campaign_ids')
+                    ->label('Rekomendasi Donasi')
+                    ->options(function () {
+                        return Campaign::where('is_active', '1')
+                                    ->pluck('title', 'id');
+                    })
+                    ->nullable()
+                    ->searchable()
+                    ->afterStateHydrated(fn ($set, ?Article $record) => 
+                        $set('recommended_campaign_ids', $record?->recommended_campaign_ids
+                            ? json_decode($record->recommended_campaign_ids) : [] 
+                        )
+                    )
+                    ->multiple()
             ]);
     }
 
