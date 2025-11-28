@@ -14,7 +14,8 @@
         "laravel/tinker": "^2.9",
         "solution-forest/filament-simplelightbox": "^0.0.10",
         "spatie/laravel-html": "^3.11",
-        "spatie/laravel-permission": "^6.23"
+        "spatie/laravel-permission": "^6.23",
+        "swisnl/filament-backgrounds": "^1.1"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",

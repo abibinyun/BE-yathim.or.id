@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\DonationResource;
 use Intervention\Image\Facades\Image;
+use Illuminate\Support\Str;
 
 class DonationController extends Controller
 {
@@ -40,14 +41,17 @@ class DonationController extends Controller
         $donation->amount = $request->amount;
         $donation->payment_method = $request->payment_method;
         $donation->bank_account = $request->bank_account;
-        $donation->transaction_id = $request->transaction_id;
+
+        // ✅ Buat transaction_id otomatis jika tidak dikirim dari frontend
+        $donation->transaction_id = $request->transaction_id ?? 'DON-' . now()->format('Ymd-His') . '-' . strtoupper(Str::random(4));
+
         $donation->notes = $request->notes;
 
+        // --- BAGIAN FILE PROOF TETAP ---
         if ($request->hasFile('payment_proof')) {
             $image = $request->file('payment_proof');
             $storagePath = Storage::disk('public')->path('payment_proofs');
 
-            // ✅ Pastikan folder ada — buat jika belum
             if (!is_dir($storagePath)) {
                 mkdir($storagePath, 0775, true);
             }
@@ -65,14 +69,12 @@ class DonationController extends Controller
 
                 $donation->payment_proof = 'payment_proofs/' . $filename;
             } else {
-                // untuk file PDF atau selain image
                 $donation->payment_proof = $image->store('payment_proofs', 'public');
             }
         }
 
         $donation->save();
 
-        // ✅ Kirim notifikasi email (jika ada pengaturan)
         if (config('mail.donation_recipients')) {
             Mail::to(config('mail.donation_recipients'))
                 ->send(new DonationReceived($donation, $campaign));

@@ -20,6 +20,7 @@ use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use SolutionForest\FilamentSimpleLightBox\SimpleLightBoxPlugin;
 use App\Filament\Widgets\TriggerGithubActionWidget;
 use App\Filament\Pages\Profile;
+use Swis\Filament\Backgrounds\FilamentBackgroundsPlugin;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -59,6 +60,11 @@ class AdminPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ])
-            ->plugin(SimpleLightBoxPlugin::make());
+            ->plugins([
+                SimpleLightBoxPlugin::make(),
+                FilamentBackgroundsPlugin::make()
+                    ->showAttribution(false)
+                    ->remember(900),
+            ]);
     }
 }
